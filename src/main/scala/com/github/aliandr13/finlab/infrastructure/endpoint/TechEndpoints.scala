@@ -10,7 +10,7 @@ import org.http4s.dsl.Http4sDsl
   */
 class TechEndpoints[F[_] : Effect] extends Http4sDsl[F] {
 
-  def ping: HttpRoutes[F] =
+  private def ping: HttpRoutes[F] =
     HttpRoutes.of[F] {
       case GET -> Root / "ping" => Ok("Pong!\n")
     }
