@@ -20,16 +20,16 @@ class UserEndPoints[F[_]: Effect] extends Http4sDsl[F] {
 
   implicit val userDecoder: EntityDecoder[F, User] = jsonOf
 
-  private val USERS = "users"
+  private val USER = "user"
 
-  private def listEndpoint(): HttpRoutes[F] =
+  private def userEndpoint(): HttpRoutes[F] =
     HttpRoutes.of[F] {
-      case GET -> Root / USERS => Ok("[]")
+      case GET -> Root / USER => Ok("{\"name\": \"user endpoint\"}")
     }
 
   private def searchByName(userService: UserService[F]): HttpRoutes[F] =
     HttpRoutes.of[F] {
-      case GET -> Root / USERS / userName =>
+      case GET -> Root / USER / userName =>
         userService.getUserByName(userName).value.flatMap {
           case Right(found) => Ok(found.asJson)
           case Left(UserNotFoundError) => NotFound(s"User not found: $userName")
@@ -37,7 +37,7 @@ class UserEndPoints[F[_]: Effect] extends Http4sDsl[F] {
     }
 
   def endpoints(userService: UserService[F]): HttpRoutes[F] =
-    listEndpoint() <+> searchByName(userService)
+    userEndpoint() <+> searchByName(userService)
 }
 
 object UserEndPoints {
