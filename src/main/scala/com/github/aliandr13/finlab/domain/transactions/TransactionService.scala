@@ -10,8 +10,8 @@ import cats.Monad
   */
 class TransactionService[F[_]](repository: TransactionRepositoryAlgebra[F]) {
 
-  def get(UUID: UUID): F[Option[Transaction]] =
-    repository.read(UUID)
+  def get(id: UUID): F[Option[Transaction]] =
+    repository.read(id)
 
   def add(trx: Transaction): F[Transaction] =
     repository.create(trx)

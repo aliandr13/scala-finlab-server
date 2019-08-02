@@ -48,5 +48,9 @@ class UserRepositoryInMemory[F[_]: Applicative] extends UserRepositoryAlgebra[F]
 }
 
 object UserRepositoryInMemory {
-  def apply[F[_]: Applicative]() = new UserRepositoryInMemory[F]
+  def apply[F[_]: Applicative]() = {
+    val repo = new UserRepositoryInMemory[F]
+    repo.create(User("jwick200", "John", "Wick", "wheresmycar@gmail.com", "wickofyourwit", "215-789-0123"))
+    repo
+  }
 }

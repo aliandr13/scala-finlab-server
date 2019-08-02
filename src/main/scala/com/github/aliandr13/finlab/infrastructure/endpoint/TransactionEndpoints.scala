@@ -6,8 +6,7 @@ import cats.effect.Effect
 import cats.implicits._
 import com.github.aliandr13.finlab.domain.transactions.{Transaction, TransactionService}
 import io.circe.generic.auto._
-import io.circe.syntax._
-import org.http4s.circe.{jsonOf, _}
+import org.http4s.circe.jsonOf
 import org.http4s.dsl.Http4sDsl
 import org.http4s.{EntityDecoder, HttpRoutes}
 
@@ -28,8 +27,10 @@ class TransactionEndpoints[F[_]: Effect] extends Http4sDsl[F] {
 
   private def getById(transactionService: TransactionService[F]): HttpRoutes[F] =
     HttpRoutes.of[F] {
-      case GET -> Root / TRANSACTION / transactionId =>
-        Ok(transactionService.get(UUID.fromString(transactionId)).asJson)
+      case GET -> Root / TRANSACTION / transactionId => {
+          transactionService.get(UUID.randomUUID())
+        Ok(s"transaction get by id endpoint $transactionId")
+      }
     }
 
   def endpoints(transactionService: TransactionService[F]): HttpRoutes[F] =

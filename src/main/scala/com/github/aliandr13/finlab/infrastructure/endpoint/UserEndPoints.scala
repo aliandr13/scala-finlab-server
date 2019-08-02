@@ -20,24 +20,63 @@ class UserEndPoints[F[_]: Effect] extends Http4sDsl[F] {
 
   implicit val userDecoder: EntityDecoder[F, User] = jsonOf
 
-  private val USER = "user"
+  private val USERS = "users"
 
+  /**
+    * Get User info endpoint
+    *
+    * @return
+    */
   private def userEndpoint(): HttpRoutes[F] =
     HttpRoutes.of[F] {
-      case GET -> Root / USER => Ok("{\"name\": \"user endpoint\"}")
+      case GET -> Root / USERS => Ok("{\"name\": \"user endpoint\"}")
     }
 
+  /**
+    * Get User by name
+    * @param userService user Service
+    * @return
+    */
   private def searchByName(userService: UserService[F]): HttpRoutes[F] =
     HttpRoutes.of[F] {
-      case GET -> Root / USER / userName =>
+      case GET -> Root / USERS / userName =>
         userService.getUserByName(userName).value.flatMap {
           case Right(found) => Ok(found.asJson)
           case Left(UserNotFoundError) => NotFound(s"User not found: $userName")
         }
     }
 
+  /**
+    * Create new User
+    * @return
+    */
+  private def create(): HttpRoutes[F] =
+    HttpRoutes.of[F] {
+      case GET -> POST / USERS => Ok("{\"name\": \"user create endpoint\"}")
+    }
+
+  /**
+    * Update user
+    *
+    * @return
+    */
+  private def update(): HttpRoutes[F] =
+    HttpRoutes.of[F] {
+      case PUT -> Root / USERS => Ok("User update endpoint")
+    }
+
+  /**
+    * Delete User by Id
+    *
+    * @return
+    */
+  private def delete(): HttpRoutes[F] =
+    HttpRoutes.of[F] {
+      case DELETE -> Root / USERS => Ok("User delete endpoint")
+    }
+
   def endpoints(userService: UserService[F]): HttpRoutes[F] =
-    userEndpoint() <+> searchByName(userService)
+    userEndpoint() <+> searchByName(userService) <+> create() <+> update() <+> delete()
 }
 
 object UserEndPoints {
