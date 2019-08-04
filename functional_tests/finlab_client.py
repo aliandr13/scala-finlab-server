@@ -6,6 +6,7 @@ from urllib.parse import urlparse
 from urllib.parse import parse_qs
 from urllib.parse import urlsplit
 
+
 class FinlabClient(object):
 
     def __init__(self, url='http://localhost:9090'):
@@ -28,11 +29,10 @@ class FinlabClient(object):
         if ob is None:
             response = self.session.request(method, u, headers=hs, **kw)
         else:
-            response = self.session.request(method, u, headers =hs, data=json.dump(ob), **kw)
+            response = self.session.request(method, u, headers=hs, data=json.dumps(ob), **kw)
         if "Authorization" in response.headers:
             self.authHeader = response.headers['Authorization']
         return response
-
 
     ##### users endpoints
 
@@ -41,3 +41,12 @@ class FinlabClient(object):
 
     def get_user_endpoint(self):
         return self.make_request("/users")
+
+    def create_user(self, user):
+        return self.make_request("/users", user, 'POST')
+
+    def update_user(self, user):
+        return self.make_request("/users", user, 'PUT')
+
+    def delete_user(self, user):
+        return self.make_request("/users", user, 'DELETE')

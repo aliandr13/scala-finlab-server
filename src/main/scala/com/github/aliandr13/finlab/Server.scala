@@ -12,6 +12,7 @@ import com.github.aliandr13.finlab.infrastructure.endpoint.{
   UserEndPoints
 }
 import com.github.aliandr13.finlab.infrastructure.repository.{
+  AccountRepositoryInMemory,
   TransactionRepositoryInMemory,
   UserRepositoryInMemory
 }
@@ -31,8 +32,9 @@ object Server extends IOApp {
       txnEc <- ExecutionContexts.cachedThreadPool[F]
       userRepo = UserRepositoryInMemory[F]()
       trxRepo = TransactionRepositoryInMemory[F]()
+      accRepo = AccountRepositoryInMemory[F]()
       userService = UserService[F](userRepo)
-      accountService = AccountService[F]
+      accountService = AccountService[F](accRepo)
       trxService = TransactionService[F](trxRepo)
       services = TechEndpoints.endpoints[F]() <+>
         UserEndPoints.endpoints[F](userService) <+>

@@ -52,7 +52,12 @@ class UserEndPoints[F[_]: Effect] extends Http4sDsl[F] {
     */
   private def create(): HttpRoutes[F] =
     HttpRoutes.of[F] {
-      case GET -> POST / USERS => Ok("{\"name\": \"user create endpoint\"}")
+      case req @ POST -> Root / USERS =>
+        val user = for {
+          u <-req.as[User]
+        } yield u
+        System.out.println(user)
+        Ok("{\"name\": \"user create endpoint\"}")
     }
 
   /**
@@ -62,7 +67,12 @@ class UserEndPoints[F[_]: Effect] extends Http4sDsl[F] {
     */
   private def update(): HttpRoutes[F] =
     HttpRoutes.of[F] {
-      case PUT -> Root / USERS => Ok("User update endpoint")
+      case req @ PUT -> Root / USERS =>
+        val user = for {
+          u <-req.as[User]
+        } yield u
+        System.out.println(user)
+        Ok("{\"name\": \"user update endpoint\"}")
     }
 
   /**
@@ -72,7 +82,12 @@ class UserEndPoints[F[_]: Effect] extends Http4sDsl[F] {
     */
   private def delete(): HttpRoutes[F] =
     HttpRoutes.of[F] {
-      case DELETE -> Root / USERS => Ok("User delete endpoint")
+      case req @ DELETE -> Root / USERS =>
+        val user = for {
+          u <-req.as[User]
+        } yield u
+        System.out.println(user)
+        Ok("{\"name\": \"user delete endpoint\"}")
     }
 
   def endpoints(userService: UserService[F]): HttpRoutes[F] =

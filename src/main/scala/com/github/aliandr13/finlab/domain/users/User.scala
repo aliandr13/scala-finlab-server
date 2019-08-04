@@ -9,7 +9,7 @@ case class User(
     firstName: String,
     lastName: String,
     email: String,
-    hash: String,
+    password: String,
     phone: String,
     id: Option[Long] = None
 )
