@@ -18,6 +18,8 @@ trait AccountRepositoryAlgebra[F[_]] {
 
   def findByDate(from: LocalDateTime, to: LocalDateTime): F[List[Account]]
 
+  def findByName(name: String): F[Option[Account]]
+
   def findByUser(userId: Long): F[List[Account]]
 
   def list(pageSize: Int, offset: Int): F[List[Account]]

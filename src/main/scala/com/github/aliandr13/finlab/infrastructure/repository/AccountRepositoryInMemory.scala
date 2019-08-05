@@ -41,6 +41,11 @@ class AccountRepositoryInMemory[F[_]: Applicative] extends AccountRepositoryAlge
       .filter(a => a.createdAt.compareTo(to) < 0)
       .pure[F]
 
+  override def findByName(name: String): F[Option[Account]] =
+    cache.values.toList
+      .find(a => a.name == name)
+      .pure[F]
+
   override def list(pageSize: Int, offset: Int): F[List[Account]] =
     cache.values.toList.slice(offset, pageSize + offset).pure[F]
 

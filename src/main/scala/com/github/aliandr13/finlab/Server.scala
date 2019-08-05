@@ -2,7 +2,7 @@ package com.github.aliandr13.finlab
 
 import cats.effect._
 import cats.implicits._
-import com.github.aliandr13.finlab.domain.accounts.AccountService
+import com.github.aliandr13.finlab.domain.accounts.{AccountService, AccountValidationInterpreter}
 import com.github.aliandr13.finlab.domain.transactions.TransactionService
 import com.github.aliandr13.finlab.domain.users.UserService
 import com.github.aliandr13.finlab.infrastructure.endpoint.{
@@ -29,17 +29,19 @@ object Server extends IOApp {
 
   def createServer[F[_]: ContextShift: ConcurrentEffect: Timer]: Resource[F, H4Server[F]] =
     for {
-      txnEc <- ExecutionContexts.cachedThreadPool[F]
-      userRepo = UserRepositoryInMemory[F]()
-      trxRepo = TransactionRepositoryInMemory[F]()
-      accRepo = AccountRepositoryInMemory[F]()
-      userService = UserService[F](userRepo)
-      accountService = AccountService[F](accRepo)
-      trxService = TransactionService[F](trxRepo)
-      services = TechEndpoints.endpoints[F]() <+>
+      txnEc          <- ExecutionContexts.cachedThreadPool[F]
+      userRepo       =  UserRepositoryInMemory[F]()
+      trxRepo        =  TransactionRepositoryInMemory[F]()
+      accRepo        =  AccountRepositoryInMemory[F]()
+      userService    =  UserService[F](userRepo)
+      accValidator   =  AccountValidationInterpreter[F](accRepo)
+      accService     =  AccountService[F](accRepo, accValidator)
+      trxService     =  TransactionService[F](trxRepo)
+      services       =  TechEndpoints.endpoints[F]() <+>
         UserEndPoints.endpoints[F](userService) <+>
-        AccountEndpoints.endpoints[F](accountService) <+>
+        AccountEndpoints.endpoints[F](accService) <+>
         TransactionEndpoints.endpoints[F](trxService)
+
       httpApp = Router("/" -> services).orNotFound
       server <- BlazeServerBuilder[F]
         .bindHttp(9090, "localhost")

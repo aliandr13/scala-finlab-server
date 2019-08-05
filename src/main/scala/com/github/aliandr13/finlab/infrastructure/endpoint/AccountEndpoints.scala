@@ -22,7 +22,7 @@ class AccountEndpoints[F[_]: Effect] extends Http4sDsl[F] {
 
   private def accountEndpoint(): HttpRoutes[F] =
     HttpRoutes.of[F] {
-      case GET -> Root / ACCOUNTS => Ok("{\"name\": \"account endpoint\"}")
+      case GET -> Root / ACCOUNTS => Ok("{\"name\": \"accounts endpoint\"}")
     }
 
   private def getAccountEndpoint(accountService: AccountService[F]): HttpRoutes[F] =
