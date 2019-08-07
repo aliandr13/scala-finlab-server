@@ -70,7 +70,7 @@ class FinlabClient(object):
         return self.make_request(ACCOUNTS)
 
     def get_account_by_id(self, id):
-        return self.make_request(ACCOUNTS + id)
+        return self.make_request(ACCOUNTS_PARAM.format(id))
 
     def create_account(self, acc):
         return self.make_request(ACCOUNTS, acc, POST)
@@ -79,6 +79,6 @@ class FinlabClient(object):
         return self.make_request(ACCOUNTS, acc, PUT)
 
     def delete_account(self, acc_id):
-        return self.make_request(ACCOUNTS_PARAM.format(acc_id))
+        return self.make_request(ACCOUNTS_PARAM.format(acc_id), None,  DELETE)
 
     ##### accounts endpoints

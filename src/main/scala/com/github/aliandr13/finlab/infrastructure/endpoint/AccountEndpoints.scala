@@ -68,7 +68,7 @@ class AccountEndpoints[F[_]: Effect] extends Http4sDsl[F] {
       case DELETE -> Root / ACCOUNTS / LongVar(id) =>
         for {
           _ <- accountService.delete(id)
-          resp <- Ok()
+          resp <- NoContent()
         } yield resp
     }
 
